@@ -2,17 +2,9 @@ from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField
 from wtfroms.validators import Required 
 
-class NameForm(Form):
+class NameForm(FlaskForm):
 	name = StringField("what is your name ", validators=[Required()]
 	submit = SubmitField("Submit")
-
-
-
-
-
-
-
-
 
 
 

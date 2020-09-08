@@ -9,7 +9,7 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 
-now = datetime.utcnow()
+
 
 # Setting route & view function 
 @app.route("/")  # setting static route
@@ -21,11 +21,9 @@ def user(name):
 	# response = make_response('<h1>This document carries a cookie!</h1>') 
 	return render_template('user.html', name = name)
 
-@app.route('/index1')
-def index1():
-	response = make_response('<h1>This document carries a cookie!</h1>')
-	response.set_cookie("answer", "42")
-	return response
+@app.route('/login')
+def login():
+	return render_template("form.html", form=) 
 
 @app.errorhandler(404)
 def page_not_found(e):
