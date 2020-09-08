@@ -3,6 +3,7 @@ from flask import Flask, request, make_response, abort, render_template
 from flask_bootstrap import Bootstrap  #this is a flask-boostrap extension 
 from flask_moment import Moment
 from datetime import datetime
+from form import NameForm
 
 #initialization of Flask
 app = Flask(__name__)
@@ -23,7 +24,8 @@ def user(name):
 
 @app.route('/login')
 def login():
-	return render_template("form.html", form=) 
+	form = NameForm()
+	return render_template("form.html") 
 
 @app.errorhandler(404)
 def page_not_found(e):
