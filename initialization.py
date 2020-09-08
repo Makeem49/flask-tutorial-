@@ -10,6 +10,9 @@ app = Flask(__name__)
 bootstrap = Bootstrap(app)
 moment = Moment(app)
 
+app.config['SECRET_KEY'] = '0fb7ef58e49e4a7d83898e93ae3033e3'
+
+
 
 
 # Setting route & view function 
@@ -20,12 +23,12 @@ def index():
 @app.route("/user/<name>")  # setting dynamic route
 def user(name):
 	# response = make_response('<h1>This document carries a cookie!</h1>') 
-	return render_template('user.html', name = name)
+	return render_template('user.html', name=name)
 
 @app.route('/login')
 def login():
 	form = NameForm()
-	return render_template("form.html") 
+	return render_template("form.html", form = form) 
 
 @app.errorhandler(404)
 def page_not_found(e):
