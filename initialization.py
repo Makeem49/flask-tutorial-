@@ -16,19 +16,19 @@ app.config['SECRET_KEY'] = '0fb7ef58e49e4a7d83898e93ae3033e3'
 
 
 # Setting route & view function 
-@app.route("/")  # setting static route
+@app.route("/", methods=['GET', 'POST']) 
 def index():
-	return render_template("index.html",current_time=datetime.utcnow())
+	form = NameForm()
+	name = ''
+	if form.validate_on_submit():
+		name = form.name.data
+		form.name.data = ''
+	return render_template("index.html", form = form, name=name)
 
 @app.route("/user/<name>")  # setting dynamic route
 def user(name):
-	# response = make_response('<h1>This document carries a cookie!</h1>') 
-	return render_template('user.html', name=name)
-
-@app.route('/login')
-def login():
 	form = NameForm()
-	return render_template("form.html", form = form) 
+	return render_template('login.html', name=name, form=form)
 
 @app.errorhandler(404)
 def page_not_found(e):
@@ -37,9 +37,3 @@ def page_not_found(e):
 # Server set up 
 if __name__ == "__main__":
 	app.run(debug=True)
-
-
-
-
-
-

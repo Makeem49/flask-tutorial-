@@ -1,17 +1,22 @@
 {% extends "base.html" %} 
 
-{% import "boostrap/wtf.html" as wtf %}
+{% import "bootstrap/wtf.html" as wtf %}
 
 {% block title %}Flasky{% endblock %}
 
+{% block page_content %} 
 
-<form method="POST">
-	
-	{{ form.name.label }}
-	{{ form.name(id='my-text-field')}}
-	{{ form.submit }}
+	<form method="POST">
+		
+		{{ form.name.label }}
+		{{ form.name(id='my-text-field')}}
+		{{ form.submit }}
 
-</form>
+	</form>
+
+	{{ wtf.quick_form(form)}}
+
+{% endblock %}
 
 
 
