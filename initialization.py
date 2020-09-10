@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, abort, render_template
+from flask import Flask, request, make_response, abort, render_template, redirect,url_for,session
 
 from flask_bootstrap import Bootstrap  #this is a flask-boostrap extension 
 from flask_moment import Moment
@@ -19,11 +19,11 @@ app.config['SECRET_KEY'] = '0fb7ef58e49e4a7d83898e93ae3033e3'
 @app.route("/", methods=['GET', 'POST']) 
 def index():
 	form = NameForm()
-	name = ''
+	# name = ''
 	if form.validate_on_submit():
-		name = form.name.data
-		form.name.data = ''
-	return render_template("index.html", form = form, name=name)
+		session['name'] = form.name.data
+		return redirect(url_for('index'))
+	return render_template("index.html", form = form, name=session.get('name'))
 
 @app.route("/user/<name>")  # setting dynamic route
 def user(name):
