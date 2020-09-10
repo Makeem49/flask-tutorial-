@@ -1,4 +1,4 @@
-from flask import Flask, request, make_response, abort, render_template, redirect,url_for,session
+from flask import Flask, request, make_response, abort, render_template, redirect,url_for,session, flash
 
 from flask_bootstrap import Bootstrap  #this is a flask-boostrap extension 
 from flask_moment import Moment
@@ -21,6 +21,9 @@ def index():
 	form = NameForm()
 	# name = ''
 	if form.validate_on_submit():
+		old_name = session.get('name')
+		if old_name is not None and old_name != form.name.data:
+			flash('username not matched, please check your spelling!')
 		session['name'] = form.name.data
 		form.name.data = ''
 		return redirect(url_for('index'))
