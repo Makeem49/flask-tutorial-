@@ -1,5 +1,4 @@
 from flask import Flask, request, make_response, abort, render_template, redirect,url_for,session, flash
-
 from flask_bootstrap import Bootstrap  #this is a flask-boostrap extension 
 from flask_moment import Moment
 from datetime import datetime
@@ -17,21 +16,29 @@ app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
 db = SQLAlchemy(app)
 
 class Role(db.Model):
-	__table__ = "roles" # If the table name is not set, the class name will be use for the table name
+	__tablename__ = "roles" 
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String , unique = True, nullable = False)
+	users = db.relationship("User", backref = "role")
 
 	def __repr__(self):
 		return f"Role {self.name}"
 
 
 class User(db.Model):
-	__table__ = "users"
+	__tablename__ = "users" 
 	id = db.Column(db.Integer, primary_key = True)
 	username = db.Column(db.String, unique = True, nullable = False)
+	role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))  #The arguemnt in foreign_key use the Role table name from Role class
+
 
 	def __repr__(self):
 		return f"User {self.username}"
+
+
+
+
+
 
 
 
