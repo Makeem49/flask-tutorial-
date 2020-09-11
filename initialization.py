@@ -4,6 +4,7 @@ from flask_bootstrap import Bootstrap  #this is a flask-boostrap extension
 from flask_moment import Moment
 from datetime import datetime
 from form import NameForm
+from flask_sqlalchemy import SQLAlchemy
 
 #initialization of Flask
 app = Flask(__name__)
@@ -11,6 +12,27 @@ bootstrap = Bootstrap(app)
 moment = Moment(app)
 
 app.config['SECRET_KEY'] = '0fb7ef58e49e4a7d83898e93ae3033e3'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' 
+
+db = SQLAlchemy(app)
+
+class Role(db.Model):
+	__table__ = "roles" # If the table name is not set, the class name will be use for the table name
+	id = db.Column(db.Integer, primary_key = True)
+	name = db.Column(db.String , unique = True, nullable = False)
+
+	def __repr__(self):
+		return f"Role {self.name}"
+
+
+class User(db.Model):
+	__table__ = "users"
+	id = db.Column(db.Integer, primary_key = True)
+	username = db.Column(db.String, unique = True, nullable = False)
+
+	def __repr__(self):
+		return f"User {self.username}"
+
 
 
 
