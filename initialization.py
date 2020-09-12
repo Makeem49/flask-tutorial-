@@ -19,7 +19,7 @@ class Role(db.Model):
 	__tablename__ = "roles" 
 	id = db.Column(db.Integer, primary_key = True)
 	name = db.Column(db.String , unique = True, nullable = False)
-	users = db.relationship("User", backref = "role")
+	users = db.relationship("User", backref = "role", backref = 'dynamic')
 
 	def __repr__(self):
 		return f"Role {self.name}"
