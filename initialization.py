@@ -6,6 +6,9 @@ from form import NameForm
 from flask_sqlalchemy import SQLAlchemy
 from flask_script import Manager, Shell
 from flask_migrate import Migrate, MigrateCommand
+import os 
+from flask_mail import Mail
+
 
 #initialization of Flask
 app = Flask(__name__)
@@ -16,7 +19,13 @@ moment = Moment(app)
 
 app.config['SECRET_KEY'] = '0fb7ef58e49e4a7d83898e93ae3033e3'
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db' 
+app.config['MAIL_SERVER'] = 'smtp.googlemail.com'
+app.config['MAIL_PORT'] = 587 
+app.config['MAIL_USE_TLS']	= True
+app.config['MAIL_USERNAME'] = os.environ.get('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.environ.get('MAIL_PASSWORD')
 
+mail = Mail(app)
 db = SQLAlchemy(app)
 
 migrate = Migrate(app,db)
@@ -63,7 +72,7 @@ def index():
 		form.name.data = ''
 		return redirect(url_for('index'))
 	return render_template("index.html", form = form, name=session.get('name'),
-																				known = session.get("known", False))
+															known = session.get("known", False))
 
 @app.route("/user/<name>")  # setting dynamic route
 def user(name):
