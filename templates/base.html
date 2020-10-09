@@ -15,12 +15,16 @@
       <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css')}}"> -->
     {% block css %}{% endblock %}
 
-      <link rel="shortcut icon" href="{{ url_for('static', filename = 'flask-icon.png') }}" type="image/x-icon"> 
+    <link rel="shortcut icon" href="{{ url_for('static', filename = 'flask-icon.png') }}" type="image/x-icon"> 
+    {{ moment.include_jquery() }}
+    {{ moment.include_moment() }}
+    {{ moment.lang('ab') }}
     <!-- The below code is called "code block " which is a templating language-->
     <!-- Jinja is a templating engine, which is part of dependency that flask rest upon for web development -->
     {% block title %} 
       {% if title %}
         <title>Flask Blog- {{title}}</title>
+      {% else %}
         <title> Flask Blog </title>
       {% endif  %}
     {% endblock %} 
@@ -54,9 +58,22 @@
   <!-- Jinja is a templating engine, which is part of dependency that flask rest upon for web development -->
   
   {% block content %} 
-  <div class="container">    
-    {% block page_content %}{% endblock %} 
-  </div> {% endblock %}
+    <div class="container "> 
+      <div class="page-header ml-5 mt-3 mr-5"> 
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                <div class="alert alert-{{ category }} btn-warning">
+                   <button type="button" class="close" data-dismiss="alert">&times;</button> 
+                  {{ message }}
+                </div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+      </div>
+    </div>
+      {% block page_content %} {% endblock %}
+  {% endblock %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->
