@@ -3,39 +3,38 @@
 <!DOCTYPE html>
 <html>
 <head>
-  <!-- Required meta tags -->
-    <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <!-- Required meta tags -->
+      <meta charset="utf-8">
+      <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
 
-    <!-- Bootstrap CSS -->
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+      <!-- Bootstrap CSS -->
+      <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css" integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
 
-    <!-- link to our static file css -->
-    <!-- Using url_for from flask tolocate the location of the css static folder  -->
-    <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css')}}"> -->
-  {% block css %}{% endblock %}
-  <!-- The below code is called "code block " which is a templating language-->
-  <!-- Jinja is a templating engine, which is part of dependency that flask rest upon for web development -->
-  {% block title %} 
-    {% if title %}
-      <title>Flask Blog- {{title}}</title>
-      <title> Flask Blog </title>
-    {% endif  %}
-  {% endblock %} 
+      <!-- link to our static file css -->
+      <!-- Using url_for from flask tolocate the location of the css static folder  -->
+      <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css')}}"> -->
+    {% block css %}{% endblock %}
+
+      <link rel="shortcut icon" href="{{ url_for('static', filename = 'flask-icon.png') }}" type="image/x-icon"> 
+    <!-- The below code is called "code block " which is a templating language-->
+    <!-- Jinja is a templating engine, which is part of dependency that flask rest upon for web development -->
+    {% block title %} 
+      {% if title %}
+        <title>Flask Blog- {{title}}</title>
+        <title> Flask Blog </title>
+      {% endif  %}
+    {% endblock %} 
 
 
 </head>
 <body>
-
-    {% block navbar  %}
-
+  {% block navbar  %}
     <div class='container'>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
         <a class="navbar-brand" href="#">Flask</a>
         <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
           <span class="navbar-toggler-icon"></span>
         </button>
-
         <div class="collapse navbar-collapse" id="navbarSupportedContent">
           <ul class="navbar-nav mr-auto">
             <li class="nav-item active">
@@ -49,14 +48,15 @@
         </div>
       </nav>
       </div>
-    {% endblock  %}
+  {% endblock  %}
  
   <!-- The below code is called "code block " which is a templating language-->
   <!-- Jinja is a templating engine, which is part of dependency that flask rest upon for web development -->
   
-    {% block content %}
-
-    {% endblock content %}
+  {% block content %} 
+  <div class="container">    
+    {% block page_content %}{% endblock %} 
+  </div> {% endblock %}
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

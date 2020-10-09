@@ -1,4 +1,4 @@
-from flask import Flask, render_template
+from flask import Flask, render_template, url_for
 from flask_bootstrap import Bootstrap
 
 
@@ -18,11 +18,11 @@ def user(name):
 
 @app.errorhandler(500) 
 def page_not_found(e): 
-	return render_template('500.html'), 500
+	return render_template('500.html', title = "Server Error"), 500
 
 @app.errorhandler(404) 
 def page_not_found(e): 
-	return render_template('404.html'), 404
+	return render_template('404.html', title = "Page Error"), 404
 
 if __name__ == '__main__':
     app.run(debug=True)
