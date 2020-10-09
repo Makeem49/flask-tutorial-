@@ -1,11 +1,11 @@
-{% extends "base.html" %}   <!-- this is template ineritance from Flask Boostrap which provides the webpages that include all javascript and Boostrap css -->
 
-{% block page_content %}
+{% extends "base.html" %}
 
-	<div class="page-header"> 
-		<h1>
-		Hello, {% if name %} {{ name }} {% else %} {{Stranger}} {% endif %} !
-		</h1>
-	</div>
 
-{%endblock%}
+{% block content %} 
+	<div class="container"> 
+		<div class="page-header ml-5 mt-3"> 
+  			<h1>Hello {{name}}! welcome.</h1>
+  		</div>
+  	</div>
+{% endblock %}
