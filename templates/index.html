@@ -6,6 +6,12 @@
 	<div class="container"> 
 		<div class="page-header ml-5 mt-3"> 
   			 <h1>Hello, {% if name %}{{ name }}{% else %}Stranger{% endif %}!</h1> 
+  			{% if know %}
+  				<p>Welcome back {{name}}</p>
+  			{% else %}
+  				<p>Nice you join Us</p>
+  			{% endif %} 
+  			
   			{{ wtf.quick_form(form) }}
   		</div>
   	</div>
