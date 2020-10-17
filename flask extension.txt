@@ -1,0 +1,18 @@
+FLASK AUTHENTICATION FOR USER
+
+
+
+
+1. Flask-Login: Management of user sessions for logged-in users
+2. Werkzeug or flask-bcrypt : Password hashing and verification 
+3. itsdangerous: Cryptographically secure token generation and verification 
+4. Flask-Mail: Sending of authentication-related emails
+5. Flask-Bootstrap: HTML templates
+6. Flask-WTF: Web forms
+7. 
+
+
+
+
+
+

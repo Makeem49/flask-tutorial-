@@ -1,4 +1,6 @@
 from . import db
+from werkzeug.security import generate_password_hash, check_password_hash
+from flask_login import UserMixin 
 
 
 class Role(db.Model):
@@ -10,10 +12,24 @@ class Role(db.Model):
 		return f"Role {self.name}"
 
 
-class User(db.Model):
+class User(db.Model, UserMixin):
 	id = db.Column(db.Integer, primary_key = True)
-	username = db.Column(db.String(64), unique = True, index = True)
-	role_id = db.Column(db.Integer, db.ForeignKey('role.id')) 
+	email = db.Column(db.String(64), unique=True, index=True)
+	username = db.Column(db.String(64), unique = True, index = True) 
+	password_hash = db.Column(db.String(128))
+	role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+
+	@property      # This will genearte a write only property field
+	def password(self):
+		raise AttributeError('Password is not readable attribute')
+
+	@password.setter  # setting setter on password helps to prevent the password from being read once hashed  
+	def password(self, password):
+		self.password_hash = generate_password_hash(password)
+
+	def verify_password(self, password):
+		return check_password_hash(self.password_hash, password)
+
 
 	def __repr__(self):
 		return f"User {self.username}"
