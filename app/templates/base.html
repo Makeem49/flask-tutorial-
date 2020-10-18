@@ -44,7 +44,7 @@
       <ul class="navbar-nav ml-auto ">
         <li class="nav-item active">
           <div class="navbar-nav">
-            {% if not current_user.is_authenticated %}
+            {% if current_user.is_authenticated %}
               <li><a href="{{ url_for('auth.logout') }}">Sign Out</a></li> 
             {% else %}
               <li><a href="{{ url_for('auth.login') }}">Sign In</a></li> 
