@@ -16,11 +16,11 @@ def login():
 			if next_page:
 				return redirect(next_page)
 		flash('Invalid username or password.')
-	return render_template('auth/login.html')
+	return render_template('auth/login.html', title = "login",form = form)
 
 
-@auth.route('/logout') 
-@login_required 
+@auth.route('/logout')
+@login_required
 def logout():
     logout_user()    
     flash('You have been logged out.')    

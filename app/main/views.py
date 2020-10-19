@@ -11,18 +11,17 @@ from app.main import main
 def index():
 	form = NameForm()
 	if form.validate_on_submit():
-		user = User.query.filter_by(username=form.email.data).first()
+		user = User.query.filter_by(username=form.name.data).first()
 		if user is None:
 			user = User(username=form.name.data)
 			db.session.add(user)
-			session['know'] = False 
+			session['know'] = False
 		else:
 			session['know'] = True
-		session['name'] = form.name.data 
+		session['name'] = form.name.data
 		form.name.data = ''
 		return redirect(url_for('main.index'))
-	return render_template('index.html', title = "home",know = session.get('know', False),
-										name =session.get("name"),form = form, current_time=datetime.utcnow()) 
+	return render_template('index.html', form=form, name=session.get('name'), known=session.get('known', False)) 
 
 
 

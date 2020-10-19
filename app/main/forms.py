@@ -4,7 +4,7 @@ from wtforms.validators import DataRequired, Email, Length
 
 
 class NameForm(Form):
-	email = StringField('email', validators=[DataRequired(), Length(4,64), Email()])
+	name = StringField('name', validators=[DataRequired(), Length(4,64), Email()])
 	submit = SubmitField("Log In")	
 
 
