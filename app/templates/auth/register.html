@@ -1,19 +1,13 @@
-
 {% extends "base.html" %}
 {% import "bootstrap/wtf.html" as wtf %}
 
 {% block page_content %}
 	<div class="container"> 
 		<div class="page-header ml-5 mt-3 mr-5"> 
-      <h1> Hello
-      {% if current_user.is_authenticated %}
-        {{ current_user.username}}
-      {% else %}
-        Stranger
-      {% endif %} </h1>
+  			<div class="page-header">
+      			<h1>Register Page</h1>
+      			{{ wtf.quick_form(form,method="post") }}
+    		</div>
   		</div>
   	</div>
 {% endblock %}
-
-
-
