@@ -1,0 +1,17 @@
+
+
+Dear {{ user.username }}
+
+
+Welcome to Flasky!
+
+to confirm your account, please click on the following link:
+
+{{ url-for('auth.confirm', token=token, _external = True) }}
+
+Sincerely,
+
+The flasky Team
+
+Note : replies to tis email address are not monitored.
+
