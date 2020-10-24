@@ -3,6 +3,8 @@ from flask_login import login_user, login_required, logout_user
 from app.auth import auth
 from app.models import User
 from app.main.forms import LoginForm, RegistrationForm
+from app import db
+
 
 
 @auth.route('/login', methods=['GET', 'POST'])
@@ -11,6 +13,7 @@ def login():
 	if form.validate_on_submit():
 		user = User.query.filter_by(email=form.email.data).first()
 		if user is not None and user.verify_password(form.password.data):
+			flash('You are now logged in', 'success')
 			login_user(user, form.remember_me.data)
 			next_page = request.args.get('next')   # Using request.atgs.get("next") to query if there's next page, will direct us to the page if it exist na d none if it does not
 			if next_page:
@@ -21,6 +24,8 @@ def login():
 	return render_template('auth/login.html', title = "login",form = form)
 
 
+
+
 @auth.route('/logout')
 @login_required
 def logout():
@@ -29,14 +34,15 @@ def logout():
     return redirect(url_for('auth.login'))
 
 
+
 @auth.route('/register', methods=['GET', 'POST']) 
 def register():
 	form = RegistrationForm()
 	if form.validate_on_submit():
-		user = User(email=form.email.data, username=form.username.data, password_hash = form.password.data)
+		user = User(username=form.username.data, email=form.email.data, password=form.password.data)
 		db.session.add(user)
-		flash('Congratulations, you are now a registered user!', 'success')
-		return redirect(url_for('login'))
+		db.session.commit()
+		flash(f"Your account has been created! You are now able to login", "success")
+		return redirect(url_for("auth.login"))
 	return render_template('auth/register.html', form = form, title = 'Register page')
-
 

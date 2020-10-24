@@ -24,7 +24,7 @@ class DevelopmentConfig(Config):
 	MAIL_USE_TLS = True
 	MAIL_USERNAME = os.environ.get('MAIL_USERNAME')
 	MAIL_PASSWORD = os.environ.get('MAIL_PASSWORD')
-	SQLALCHEMY_DATABASE_URI = 'sqlite:///site.db'
+	SQLALCHEMY_DATABASE_URI =  'sqlite:///' + os.path.join(basedir, 'data.sqlite') 
 
 class TestingConfig(Config):
 	TESTING = True

@@ -21,21 +21,19 @@ class LoginForm(Form):
 
 
 class RegistrationForm(Form):
-	email = StringField('Email', validators=[Required(), Length(4,64), Email()])
-	username = 	StringField('Username' , validators=[Required(), Length(4,64), Regexp('^[A-Za-z][A-Za-z0-9_.]*$', 0,'Usernames must have only letters, '
-																					'numbers, dots or underscores')])
-	password = PasswordField('Password', validators=[Required(), EqualTo('Confirm_Password', message='Password must match.')])
-	confirm_password =  PasswordField('Confirm Password', validators=[Required()])
-	submit = SubmitField('Register')
-
+	username = StringField('Username', validators = [Required(), Length(min=4, max=25)])
+	email = StringField('Email Address', validators = [Required(), Email()])
+	password = PasswordField('Password', validators = [Required(), Length(min=4)])
+	confirm_password = PasswordField("Confirm Password", validators = [Required(), EqualTo("password",  message='Passwords must match.')])
+	submit = SubmitField("Sign Up")
 
 	def validate_email(self, email):
 		user = User.query.filter_by(email = email.data).first()
 		if user:
-			raise validationError('Email already taken')
+			raise ValidationError('Email already taken')
 
 	def validate_username(self, username):
 		user = User.query.filter_by(username = username.data).first()
 		if user:
-			raise validationError('Username already already in use.')
+			raise ValidationError('Username already already in use.')
 
