@@ -1,13 +1,90 @@
 {% extends "base.html" %}
-{% import "bootstrap/wtf.html" as wtf %}
 
-{% block page_content %}
-	<div class="container"> 
-		<div class="page-header ml-5 mt-3 mr-5"> 
-  			<div class="page-header">
-      			<h1>Register Page</h1>
-      			{{ wtf.quick_form(form,method="post") }}
-    		</div>
-  		</div>
-  	</div>
-{% endblock %}
+
+{% block content %}
+
+<div class="container">
+	
+	<div class="content-section">
+		<form method="POST" action="">
+
+			{{ form.hidden_tag() }}  <!--form.csrf_token: can also be use --> 
+
+			<fieldset class="form-group">
+				<legend class="border-bottom mb-4">Join today</legend>
+					<div class="form-group">
+						{{ form.username.label(class="form-control-label")}}
+						{% if form.username.errors %}
+							{{ form.username(class= "form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback" >
+								{% for error in form.username.errors %}
+									<span> {{error}} </span>
+								{% endfor %}
+							</div>	
+						{% else %}
+							{{ form.username(class= "form-control form-control-lg") }}
+						{% endif %}
+					</div>
+					<div class="form-group">
+						{{ form.email.label(class_="form-control-label") }}  
+						 
+						{% if form.email.errors %}
+							{{ form.email(class= "form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback" >
+								{% for error in form.email.errors %}
+									<span> {{error}} </span>
+								{% endfor %}
+							</div>	
+						{% else %}
+							{{ form.email(class= "form-control form-control-lg") }}
+						{% endif %}
+					</div>
+					<div class="form-group">
+						{{ form.password.label(class="form-control-label") }}		<!-- This represent our label in html-->
+						
+						{% if form.password.errors %}
+							{{ form.password(class= "form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback" >
+								{% for error in form.password.errors %}
+									<span> {{error}} </span>
+								{% endfor %}
+							</div>	
+						{% else %}
+							{{ form.password(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+					<div class="form-group">
+						{{ form.confirm_password.label(class="form-control-label") }}	  <!-- This represent our label in html-->
+						
+						{% if form.confirm_password.errors %}
+							{{ form.confirm_password(class="form-control form-control-lg is-invalid") }}
+							<div class="invalid-feedback" >
+								{% for error in form.confirm_password.errors %}
+									<span> {{error}} </span>
+								{% endfor %}
+							</div>	
+						{% else %}
+							{{ form.confirm_password(class="form-control form-control-lg") }}
+						{% endif %}
+					</div>
+			</fieldset>
+			<div class="form-group">
+				{{ form.submit(class="btn btn-outline-info") }}					<!-- This represent our label in html-->
+			</div>
+		</form>
+	</div>
+	<div class="border-top pt-3">
+		<small>
+			Already Have An Account? <a class=""ml-2 href="{{ url_for('auth.login') }}"> Sign In</a>
+		</small>
+	</div> 
+	
+</div>
+	 
+{% endblock content %}
+
+
+
+
+
+

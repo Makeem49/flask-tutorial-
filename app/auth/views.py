@@ -43,8 +43,6 @@ def register():
 		db.session.add(user)
 		db.session.commit()
 		token = user.generate_confirmation_token()
-		send_mail(user.mail, 'Confirm Your Account', 'auth/email/confirm', user=user , token = token )
-		flash(f"Your account has been created! You are now able to login", "success")
 		return redirect(url_for("auth.login"))
 	return render_template('auth/register.html', form = form, title = 'Register page')
 
