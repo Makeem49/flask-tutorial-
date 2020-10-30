@@ -7,7 +7,7 @@ Welcome to Flasky!
 
 to confirm your account, please click on the following link:
 
-{{ url-for('auth.confirm', token=token, _external = True) }}
+{{ url_for('auth.confirm', token=token, _external = True) }}
 
 Sincerely,
 

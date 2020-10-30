@@ -36,3 +36,5 @@ class RegistrationForm(Form):
 			raise ValidationError("Email already taken")
 
 
+
+

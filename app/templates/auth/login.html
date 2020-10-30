@@ -7,8 +7,10 @@
   			<div class="page-header">
       			<h1>Login Page</h1>
       			{{ wtf.quick_form(form) }}
+      			<small>Forget Password?<a class=""ml-2 href="#"> Click here</a> </small>
       			<p class="mt-2">New user?<a href="{{ url_for('auth.register') }}">   Click here to register </a> </p>
-    		</div>
+    		</div>	
   		</div>
   	</div>
 {% endblock %}
+
