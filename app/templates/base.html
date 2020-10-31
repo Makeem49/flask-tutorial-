@@ -46,8 +46,9 @@
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
               <li><a href="{{ url_for('auth.logout') }}">Sign Out</a></li> 
+              <a href="{{ url_for('auth.change_password') }}">Change password</a>
             {% else %}
-              <li><a href="{{ url_for('auth.login') }}">Sign In</a></li>
+              <a href="{{ url_for('auth.login') }}">Sign In</a>
             {% endif %}
           </div>
         </li>

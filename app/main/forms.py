@@ -35,6 +35,35 @@ class RegistrationForm(Form):
 		if user:
 			raise ValidationError("Email already taken")
 
+class Password_Update(Form):
+	old_password = PasswordField('Old Password', validators=[Required()])
+	password = PasswordField('New Passowrd', validators = [Required(), Length(min=4)])
+	confirm_password = PasswordField("Confirm New Password", validators = [Required(), EqualTo("password")])
+	submit = SubmitField("Update Password")
 
 
+class Reset_Password_link(Form):
+	email = StringField('Email Address', validators = [Required(), Email()])
+	submit = SubmitField("Send Password reset Link")
 
+	def validate_email(self,email):
+		user = User.query.filter_by(email=email.data).first()
+		if not user:
+			raise ValidationError("There is no account with this email, you must register first.")
+
+
+class New_Password_Form(Form):
+	password = PasswordField('New Passowrd', validators = [Required(), Length(min=4)])
+	confirm_password = PasswordField("Confirm New Password", validators = [Required(), EqualTo("password")])
+	submit = SubmitField("Reset Password")
+
+
+class Update_Mail(Form):
+	old_mail = StringField('Current Email', validators=[Required(), Email()])
+	new_mail = StringField('New Email', validators = [Required(), Email()])
+	submit = SubmitField("Update Email")
+
+	def validate_email(self, new_mail):
+		user = User.query.filter_by(email = new_mail.data).first()
+		if user:
+			raise ValidationError('Email already taken')

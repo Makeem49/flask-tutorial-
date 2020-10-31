@@ -49,10 +49,10 @@ class User(db.Model, UserMixin):
 		try:
 			data = s.loads(token)
 		except:
-			return None
+			return False
 
 		if data.get('user_id') != self.id:
-			return None
+			return False
 		self.confirmed = True
 		db.session.add(self)
 		
