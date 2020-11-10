@@ -2,8 +2,8 @@ from flask import render_template, redirect, request, url_for, flash
 from flask_login import login_user, login_required, logout_user, current_user
 from app.auth import auth
 from app.models import User
-from app.main.forms import (LoginForm, RegistrationForm, Password_Update, 
-												Update_Mail,Reset_Password_link, New_Password_Form)
+from app.main.forms import (LoginForm, RegistrationForm, PasswordUpdate, 
+												UpdateMail,ResetPasswordLink, NewPasswordLForm)
 from app import db
 from app.email import send_email
 
@@ -97,7 +97,7 @@ def resend_confirmation():
 @auth.route('/password', methods=['GET', 'POST'])
 @login_required
 def change_password():
-	form = Password_Update()
+	form = PasswordUpdate()
 	if form.validate_on_submit():
 		if current_user.verify_password(form.old_password.data):
 			current_user.password = form.password.data
@@ -115,7 +115,7 @@ password. '''
 def reset_password_link():
 	if current_user.is_authenticated:
 		return redirect(url_for('main.home'))
-	form = Reset_Password_link()
+	form = ResetPasswordLink()
 	if form.validate_on_submit():
 		user = User.query.filter_by(email =form.email.data).first()
 		token = user.generate_confirmation_token()
@@ -143,7 +143,7 @@ def reset_password(token):
 def new_password():
 	if current_user.is_authenticated:
 		return redirect(url_for('main.home'))
-	form = New_Password_Form()
+	form = NewPasswordLForm()
 	if form.validate_on_submit():
 		user = User.query.filter_by(email = form.data.email).first()
 		user.password = form.password.data
@@ -157,7 +157,7 @@ def new_password():
 @auth.route('/update_email', methods=['GET', 'POST'])
 @login_required
 def update_email():
-	form = Update_Mail()
+	form = UpdateMail()
 	if form.validate_on_submit():
 		if current_user.email == form.old_mail.data:
 			current_user.email = form.new_mail.data
