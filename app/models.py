@@ -3,7 +3,9 @@ from werkzeug.security import generate_password_hash, check_password_hash
 from flask_login import UserMixin, AnonymousUserMixin
 from app import login_manager
 from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
-from flask import current_app
+from flask import current_app, request
+from datetime import datetime
+import hashlib
 
 
 
@@ -59,15 +61,30 @@ class User(db.Model, UserMixin):
 	password_hash = db.Column(db.String(128))
 	role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
 	confirmed = db.Column(db.Boolean, default = False )
+	name = db.Column(db.String(64))
+	location = db.Column(db.String(64))
+	about_me = db.Column(db.Text())
+	member_since = db.Column(db.DateTime(), default = datetime.utcnow )
+	last_seen = db.Column(db.DateTime(), default = datetime.utcnow )
+	avatar_hash = db.Column(db.String(32))
+
+
+	def ping(self):
+		self.last_seen = datetime.utcnow()
+		db.session.add(self)
+
 
 	def __init__(self, **kwargs):
-		super(User, self).__init__(**kwargs)
+		super().__init__(**kwargs)
 
-		if self.role is none:
-			if self.email == current_app.app['FLASK_ADMIN']:
+		if self.role is None:
+			if self.email == current_app.config['FLASKY_ADMIN']:
 				self.role = Role.query.filter_by(permissions = 0xff).first()
 			if self.email is None:
 				self.role = Role.query.filter_by(default = True).first()
+
+		if self.email is not None and self.avatar_hash is None:
+			self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
 
 
 	def can(self, permissions):
@@ -107,9 +124,24 @@ class User(db.Model, UserMixin):
 		
 		return True
 
+
+	def change_email(self, token):
+		self.email = new_email
+		self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+		db.session.commit()
+		return True
+
+	def gravatar(self, size=100, default='identicon', rating = 'g'):
+		if request.is_secure:
+			url = 'https://secure.gravater.com/avatar'
+		else:
+			url = 'http://secure.gravater.com/avatar'
+		hash = self.avatar_hash or hashlib.md5(user.email.encode('utf-8')).hexdigest()
+		return f"{url}/{hash}?s={size}&d={default}&r={rating}"
+
+
 	def __repr__(self):
 		return f"User {self.username}"
-
 
 class AnonymousUser(AnonymousUserMixin):
 	def can(self,permissions):
@@ -117,5 +149,15 @@ class AnonymousUser(AnonymousUserMixin):
 
 	def is_admistrator(self):
 		return False
+
+
 		
 login_manager.anonymous_user = AnonymousUser
+
+
+
+
+
+
+
+

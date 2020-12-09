@@ -1,7 +1,7 @@
 import unittest
 from flask import current_app
 from app import create_app, db
-from app.models import User 
+from app.models import User, Role
 
 class BasicsTestCase(unittest.TestCase):
 	def setUp(self):
@@ -42,6 +42,16 @@ class UserModelTestCase(unittest.TestCase):
 		u = User(password='cat')
 		u2 = User(password='cat')
 		self.assertTrue(u.password_hash != u.password_hash)
+
+
+	def test_role_and_permission(self):
+		Role.insert_roles()
+		u = User(email = 'john@example.com', password ='cat')
+		self.assertTrue(u.can(Permission.WRITE_ARTICLES))
+		self.assertFalse(u.can(Permission.MODERATE_COMMENT))
+
+	
+
 
 
 	

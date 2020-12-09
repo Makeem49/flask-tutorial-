@@ -1,14 +1,13 @@
 from flask_wtf import Form
-from wtforms import StringField, SubmitField, PasswordField, BooleanField
+from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
 from wtforms.validators import Required, Length, EqualTo, Email, ValidationError
 from app.models import User
 
 
 
 class NameForm(Form):
-	name = StringField('name', validators=[Required(), Length(4,64), Email()])
+	name = StringField('name', validators=[Required(), Length(min=1,max=64), Email()])
 	submit = SubmitField("Log In")	
-
 
 
 class LoginForm(Form):
@@ -67,3 +66,43 @@ class UpdateMail(Form):
 		user = User.query.filter_by(email = new_mail.data).first()
 		if user:
 			raise ValidationError('Email already taken')
+
+
+class EditProfileForm(Form):
+	name = StringField("Real name", validators=[Length(min=1,max =64)])
+	location = StringField('Location', validators=[Length(min=1, max = 64)])
+	about_me = TextAreaField("About me")
+	submit = SubmitField("Submit")
+
+
+
+class EditProfileAdminForm(Form):
+	name = StringField("Real name", validators=[Length(min=1, max=64)])
+	username = StringField("Username", validators=[Length(min=4, max=64)])
+	email = StringField("Email", validators=[Required(), Length(min=4, max=64), Email()])
+	Confirmed = BooleanField('Confirmed')
+	role = SelectField("Role", coerce=int)
+	location = StringField("Location", validators=[Length(min=1,max=64)])
+	about_me = TextAreaField("About me")
+	submit = SubmitField("Submit")
+
+
+	def __init__(self,user,*args,**kwargs):
+		super().__init__(*args , **kwargs)
+		self.role.choice = [(role.id, role.name) for role in Role.query.order_by(Role.name).all()]
+		self.user = user
+
+	def validate_email(self, email):
+		if email.data != self.user.email and User.query.filter_by(email = email.data).first():
+			raise ValidationError("Email already registered")
+
+	def validate_email(self, username):
+		if username.data != self.username.email and User.query.filter_by(email = email.data).first():
+			raise ValidationError("Email already registered")
+
+
+
+
+
+
+

@@ -181,6 +181,11 @@ def confirm_new_email(token):
 	return redirect(url_for('main.index'))
 
 
+@auth.before_app_request
+def before_request():
+	if current_user.is_authenticated and current_user.ping():
+		if not current_user.confrimed and request.endpoint != 'auth':
+			return redirect(url_for('auth.unconfirmed'))
 
 
 

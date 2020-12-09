@@ -12,7 +12,7 @@
 
       <!-- link to our static file css -->
       <!-- Using url_for from flask tolocate the location of the css static folder  -->
-      <!-- <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'main.css')}}"> -->
+      <link rel="stylesheet" type="text/css" href="{{ url_for('static', filename = 'style.css')}}">
     {% block css %}{% endblock %}
 
     <link rel="shortcut icon" href="{{ url_for('static', filename = 'flask-icon.png') }}" type="image/x-icon"> 
@@ -34,8 +34,9 @@
 <body>
   {% block navbar  %}
   <div class="container">
-  <nav class="navbar navbar-expand-lg navbar-light bg-light">
+  <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
     <a class="navbar-brand" href="{{ url_for('main.index')}}">Home</a>
+    <li><a class="btn btn-secondary mr-3" href="{{ url_for('main.user', username=current_user.username) }}">Profile</a></li>
     <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
       <span class="navbar-toggler-icon"></span>
     </button>
@@ -45,10 +46,10 @@
         <li class="nav-item active">
           <div class="navbar-nav">
             {% if current_user.is_authenticated %}
-              <li><a href="{{ url_for('auth.logout') }}">Sign Out</a></li> 
-              <a href="{{ url_for('auth.change_password') }}">Change password</a>
+              <li><a class="btn btn-secondary mr-3" href="{{ url_for('auth.logout') }} ">Sign Out</a></li> 
+              <li><a class="btn btn-secondary mr-3" href="{{ url_for('auth.change_password') }}">Change password</a></li>
             {% else %}
-              <a href="{{ url_for('auth.login') }}">Sign In</a>
+              <a class="btn btn-secondary mr-3" href="{{ url_for('auth.login') }}">Sign In</a>
             {% endif %}
           </div>
         </li>
@@ -76,7 +77,9 @@
         {% endwith %}
       </div>
     </div>
+
       {% block page_content %} {% endblock %}
+
   {% endblock %}
 
     <!-- Optional JavaScript -->

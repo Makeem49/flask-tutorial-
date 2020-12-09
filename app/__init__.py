@@ -2,7 +2,7 @@ from flask import Flask, render_template
 from flask_moment import Moment
 from flask_bootstrap import Bootstrap
 from flask_mail import Mail
-from config import DevelopmentConfig
+from config import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
 
@@ -19,9 +19,10 @@ login_manager.session_protection = 'strong' # The strong value keep track of the
 login_manager.login_view = 'auth.login'
 
 
-def create_app(config_name):
+def create_app(default):
 	app = Flask(__name__)
-	app.config.from_object(DevelopmentConfig)
+	app.config.from_object(config[default])
+	config[default].init_app(app)
 
 	mail.init_app(app)
 	db.init_app(app)
@@ -35,3 +36,8 @@ def create_app(config_name):
 	app.register_blueprint(auth_blueprint, url_prefix ='/auth')
 
 	return app
+
+
+
+
+
