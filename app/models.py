@@ -96,7 +96,7 @@ class User(db.Model, UserMixin):
 
 
 	def can(self, permissions):
-		return  (self.role.permissions & permissions) == permissions
+		return self.role is not None and (self.role.permissions & permissions) == permissions
 
 	def is_admistrator(self):
 		return self.can(Permission.ADMINISTER)
