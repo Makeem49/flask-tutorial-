@@ -23,6 +23,7 @@ class Permission:
 
 
 class Role(db.Model, UserMixin):
+	__tablename__ = 'roles' 
 	id = db.Column(db.Integer, primary_key= True)
 	name = db.Column(db.String(64), unique=True)
 	default = db.Column(db.Boolean, default = False, index = True)
@@ -38,13 +39,11 @@ class Role(db.Model, UserMixin):
 			'Administrator': (0xff, False)
 		}
 
-
 		for r in roles:
 			role = Role.query.filter_by(name = r).first()
 
 			if role is None:
 				role = Role(name=r)
-
 			role.permissions = roles[r][0]
 			role.default = roles[r][1]
 			db.session.add(role)
@@ -54,12 +53,21 @@ class Role(db.Model, UserMixin):
 		return f"Role {self.name}"
 
 
+class Post(db.Model, UserMixin):
+	__tablename__ = 'posts'
+	id = db.Column(db.Integer, primary_key = True)
+	body = db.Column(db.Text, nullable = False)
+	timestamp = db.Column(db.DateTime, default=datetime.utcnow, index = True)
+	author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+
+
 class User(db.Model, UserMixin):
+	__tablename__ = 'users'
 	id = db.Column(db.Integer, primary_key = True)
 	email = db.Column(db.String(64), unique=True, index=True) 
 	username = db.Column(db.String(64), unique = True, index = True) 
 	password_hash = db.Column(db.String(128))
-	role_id = db.Column(db.Integer, db.ForeignKey('role.id'))
+	role_id = db.Column(db.Integer, db.ForeignKey('roles.id'))
 	confirmed = db.Column(db.Boolean, default = False )
 	name = db.Column(db.String(64))
 	location = db.Column(db.String(64))
@@ -67,6 +75,7 @@ class User(db.Model, UserMixin):
 	member_since = db.Column(db.DateTime(), default = datetime.utcnow )
 	last_seen = db.Column(db.DateTime(), default = datetime.utcnow )
 	avatar_hash = db.Column(db.String(32))
+	posts = db.relationship('Post', backref = 'author', lazy = 'dynamic')
 
 
 	def ping(self):
@@ -76,7 +85,6 @@ class User(db.Model, UserMixin):
 
 	def __init__(self, **kwargs):
 		super().__init__(**kwargs)
-
 		if self.role is None:
 			if self.email == current_app.config['FLASKY_ADMIN']:
 				self.role = Role.query.filter_by(permissions = 0xff).first()
@@ -88,7 +96,7 @@ class User(db.Model, UserMixin):
 
 
 	def can(self, permissions):
-		return self.role is not None and (self.role.permissions & permissions) == permissions
+		return  (self.role.permissions & permissions) == permissions
 
 	def is_admistrator(self):
 		return self.can(Permission.ADMINISTER)
@@ -121,7 +129,6 @@ class User(db.Model, UserMixin):
 			return False
 		self.confirmed = True
 		db.session.add(self)
-		
 		return True
 
 
@@ -137,11 +144,13 @@ class User(db.Model, UserMixin):
 		else:
 			url = 'http://secure.gravater.com/avatar'
 		hash = self.avatar_hash or hashlib.md5(user.email.encode('utf-8')).hexdigest()
-		return f"{url}/{hash}?s={size}&d={default}&r={rating}"
+		return '{url}/{hash}?s={size}&d={default}&r={rating}'.format(url=url, hash=hash,
+												 size=size, default=default, rating=rating)
 
 
 	def __repr__(self):
 		return f"User {self.username}"
+
 
 class AnonymousUser(AnonymousUserMixin):
 	def can(self,permissions):

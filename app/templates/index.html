@@ -33,15 +33,27 @@
 
 {% block page_content %}
 	<div class="container"> 
-		<div class="page-header ml-5 mt-3 mr-5"> 
-      <h1> Hello
-      {% if current_user.is_authenticated %}
-        {{ current_user.username}}
-      {% else %}
-        Stranger
-      {% endif %} </h1>
-  		</div>
-  	</div>
+    <h1>{{ current_user.username | capitalize }}</h1>
+		<div>
+    {% if current_user.can(Permission.WRITE_ARTICLES) %}
+      {{ wtf.quick_form(form) }}
+    {% endif %}
+    </div>
+    <ul class='posts'>
+      {% for post in posts %}
+      <li class="post">
+        <div class="profile-thumbnail">
+          <a href="{{url_for('main.user', username = post.author.username)}}"></a>
+      </div>
+      <div class="post-date"> {{ moment(post.timestamp).fromNow() }}</div>
+      <div class="post-author">
+        <a href="{{ url_for('main.user', username = post.author.username) }}">{{ post.author.username }}</a>
+      </div>
+      <div class="post-body"> {{ post.body }}</div>
+      </li>      
+      {% endfor %}
+    </ul>
+  </div>
 {% endblock %}
 
 

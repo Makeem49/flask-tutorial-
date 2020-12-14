@@ -23,9 +23,9 @@ class DevelopmentConfig(Config):
 	MAIL_PORT = 587
 	MAIL_USE_TLS = True
 	MAIL_USE_SSL = False
-	MAIL_USERNAME = 'moshoodakeemolayinka@gmail.com'
-	MAIL_PASSWORD = 'Olayinka1?'
-	MAIL_DEFAULT_SENDER ='moshoodakeemolayinka@gmail.com'
+	MAIL_USERNAME = 'patrickpwilliamson9@gmail.com'
+	MAIL_PASSWORD = 'Olayinka1'
+	MAIL_DEFAULT_SENDER = 'patrickpwilliamson9@gmail.com'
 	MAIL_MAX_EMAILS = 5
 	MAIL_SUPPRESS_SEND = False
 	MAIL_ASCII_ATTACHMENTS = False

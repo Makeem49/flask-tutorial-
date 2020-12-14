@@ -27,8 +27,9 @@
 {% block page_content %} 
 
 	<div class="container"> 
-		<div class="page-header ml-5 mt-3"> 
-      <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=100) }}"> 
+		<div class="page-header">
+        <img class="img-rounded profile-thumbnail" src="{{ user.gravatar(size=256) }}">
+        <div class="profile-header"> 
   			<h1>{{ user.username }}</h1>
   			{% if user.name or user.location %}
   			<p> 
@@ -51,11 +52,12 @@
 
   			<p>
   				Member since {{ moment(user.member_since).format('L') }}.
-  				Last seen {{ moment(user.last_seen).format() }}.
+  				Last seen {{ moment(user.last_seen).fromNow() }}.
   			</p>
   		</div>
       {% if user == current_user %}
       <a class="btn btn-secondary mr-3" href="{{ url_for('main.edit_profile') }}">Edit profile</a>
       {% endif %}
   	</div>
+</div>
 {% endblock %}

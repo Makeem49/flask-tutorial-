@@ -1,8 +1,8 @@
 from datetime import datetime
 from flask import render_template, url_for, redirect, session, flash
-from app.main.forms import NameForm, EditProfileForm
+from app.main.forms import NameForm, EditProfileForm, PostForm 
 from app import db 
-from app.models import User, Permission
+from app.models import User, Permission, Post
 from app.main import main
 from app.decorator import admin_required, permission_required
 from flask_login import login_required, current_user 
@@ -12,20 +12,14 @@ from flask import abort
 
 @main.route('/', methods=['POST', 'GET'])  
 def index():
-	form = NameForm()
-	if form.validate_on_submit():
-		user = User.query.filter_by(username=form.name.data).first()
-		if user is None:
-			user = User(username=form.name.data)
-			db.session.add(user)
-			session['know'] = False
-		else:
-			session['know'] = True
-		session['name'] = form.name.data
-		form.name.data = ''
+	form = PostForm()
+	if current_user.can(Permission.WRITE_ARTICLES) and form.validate_on_submit():
+		post = Post(body=form.body.data,author=current_user._get_current_object())
+		db.session.add(post)
+		db.session.commit()
 		return redirect(url_for('main.index'))
-	return render_template('index.html', form=form, name=session.get('name'),
-							 known=session.get('known', False), current_time=datetime.utcnow()) 
+	posts = Post.query.all()
+	return render_template('index.html', form=form, posts = posts) 
 
 @main.route('/user/<username>')
 def user(username):
@@ -77,6 +71,7 @@ def edit_prof_admin():
 	form.about_me.data = user.about_me
 	db.session.commit()
 	return render_template('edit_profile.html', form = form , user= user)
+
 
 
 
