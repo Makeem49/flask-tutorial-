@@ -38,10 +38,8 @@ class Role(db.Model, UserMixin):
 			'Moderator':(Permission.FOLLOW | Permission.COMMENT | Permission.WRITE_ARTICLES | Permission.MODERATE_COMMENT, False),
 			'Administrator': (0xff, False)
 		}
-
 		for r in roles:
 			role = Role.query.filter_by(name = r).first()
-
 			if role is None:
 				role = Role(name=r)
 			role.permissions = roles[r][0]
@@ -88,7 +86,7 @@ class User(db.Model, UserMixin):
 		if self.role is None:
 			if self.email == current_app.config['FLASKY_ADMIN']:
 				self.role = Role.query.filter_by(permissions = 0xff).first()
-			if self.email is None:
+			if self.role  is None:
 				self.role = Role.query.filter_by(default = True).first()
 
 		if self.email is not None and self.avatar_hash is None:
