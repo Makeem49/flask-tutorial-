@@ -40,7 +40,7 @@
     {% endif %}
     </div>
     <ul class='posts'>
-      {% for post in posts %}
+      {% for post in posts.items %}
       <li class="post">
         <div class="profile-thumbnail">
           <a href="{{url_for('main.user', username = post.author.username)}}"></a>

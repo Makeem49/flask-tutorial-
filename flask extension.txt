@@ -9,7 +9,7 @@ FLASK AUTHENTICATION FOR USER
 4. Flask-Mail: Sending of authentication-related emails
 5. Flask-Bootstrap: HTML templates
 6. Flask-WTF: Web forms
-7. 
+7. ForgeryPy : for creating fake data
 
 
 

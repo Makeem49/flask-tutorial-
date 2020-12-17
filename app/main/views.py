@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, url_for, redirect, session, flash
+from flask import render_template, url_for, redirect, session, flash, request
 from app.main.forms import NameForm, EditProfileForm, PostForm 
 from app import db 
 from app.models import User, Permission, Post
@@ -18,7 +18,8 @@ def index():
 		db.session.add(post)
 		db.session.commit()
 		return redirect(url_for('main.index'))
-	posts = Post.query.all()
+	page = request.args.get('page', 1, type=int )
+	posts = Post.query.order_by(Post.timestamp.desc()).paginate(page = page , per_page = 4)
 	return render_template('index.html', form=form, posts = posts) 
 
 @main.route('/user/<username>')
@@ -26,7 +27,8 @@ def user(username):
 	user = User.query.filter_by(username=username).first()
 	if user is None:
 		abort(404)
-	return render_template('user.html', user = user)
+	posts = user.posts.order_by(Post.timestamp.desc()).all() 
+	return render_template('user.html', user = user, posts = posts )
 
 
 @main.route('/edit-profile', methods=['GET', 'POST'])

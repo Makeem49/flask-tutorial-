@@ -17,6 +17,8 @@ bootstrap = Bootstrap()
 login_manager = LoginManager()
 login_manager.session_protection = 'strong' # The strong value keep track of the Clients IP address
 login_manager.login_view = 'auth.login'
+login_manager.login_message = 'You have to login to access this page'
+login_manager.login_message_category = 'info'
 
 
 def create_app(default):
