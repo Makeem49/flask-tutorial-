@@ -1,5 +1,5 @@
 from datetime import datetime
-from flask import render_template, url_for, redirect, session, flash, request
+from flask import render_template, url_for, redirect, session, flash, request, current_app 
 from app.main.forms import NameForm, EditProfileForm, PostForm 
 from app import db 
 from app.models import User, Permission, Post
@@ -19,8 +19,9 @@ def index():
 		db.session.commit()
 		return redirect(url_for('main.index'))
 	page = request.args.get('page', 1, type=int )
-	posts = Post.query.order_by(Post.timestamp.desc()).paginate(page = page , per_page = 4)
-	return render_template('index.html', form=form, posts = posts) 
+	pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page = page , per_page = current_app.config['FLASKY_POSTS_PER_PAGE'] , error_out = False)
+	posts = paginate.items
+	return render_template('index.html', pagination = pagination, form=form, posts = posts) 
 
 @main.route('/user/<username>')
 def user(username):
