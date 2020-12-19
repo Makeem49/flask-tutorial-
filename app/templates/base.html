@@ -16,9 +16,11 @@
     {% block css %}{% endblock %}
 
     <link rel="shortcut icon" href="{{ url_for('static', filename = 'flask-icon.png') }}" type="image/x-icon"> 
+    {% block scripts %}
     {{ moment.include_jquery() }}
     {{ moment.include_moment() }}
     {{ moment.lang('ab') }}
+    {% endblock %}
     <!-- The below code is called "code block " which is a templating language-->
     <!-- Jinja is a templating engine, which is part of dependency that flask rest upon for web development -->
     {% block title %} 
@@ -79,6 +81,7 @@
       {% block page_content %} {% endblock %}
 
   {% endblock %}
+
 
     <!-- Optional JavaScript -->
     <!-- jQuery first, then Popper.js, then Bootstrap JS -->

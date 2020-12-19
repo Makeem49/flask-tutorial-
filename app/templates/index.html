@@ -3,6 +3,12 @@
 {% import "bootstrap/wtf.html" as wtf %}
 {% import "_macros.html" as macros %}
 
+{% block scripts %} 
+{{ super() }} 
+{{ pagedown.include_pagedown() }} 
+{% endblock %}
+
+
  {% block navbar  %}
   <div class="container">
   <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
@@ -47,6 +53,7 @@
   </div>
 {% endblock %}
 
+{{ pagedown.include_pagedown() }}
 
 
 

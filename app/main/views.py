@@ -77,6 +77,11 @@ def edit_prof_admin():
 	db.session.commit()
 	return render_template('edit_profile.html', form = form , user= user)
 
+@main.route('/post/<int:id>', methods = ['GET', 'POST'])
+def post(id):
+	posts = Post.query.get_or_404(id)
+	return render_template('post.html', posts = [post])
+
 
 
 

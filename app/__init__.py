@@ -5,6 +5,8 @@ from flask_mail import Mail
 from config import config
 from flask_sqlalchemy import SQLAlchemy
 from flask_login import LoginManager
+from flask_pagedown import PageDown 
+
 
 
 
@@ -13,6 +15,7 @@ mail = Mail()
 db = SQLAlchemy()
 moment = Moment()
 bootstrap = Bootstrap()
+pagedown = PageDown()
 
 login_manager = LoginManager()
 login_manager.session_protection = 'strong' # The strong value keep track of the Clients IP address
@@ -31,6 +34,7 @@ def create_app(default):
 	moment.init_app(app)
 	bootstrap.init_app(app)
 	login_manager.init_app(app)
+	pagedown.init_app(app)
 
 	from app.main import main as main_blueprint
 	from app.auth import auth as auth_blueprint

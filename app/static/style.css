@@ -83,6 +83,7 @@ div.flask-pagedown-preview {
     margin: 10px 0px 10px 0px;
     border: 1px solid #e0e0e0;
     padding: 4px;
+    background-color: #f0f0f1;
 }
 div.flask-pagedown-preview h1 {
     font-size: 140%;

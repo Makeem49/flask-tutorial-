@@ -11,7 +11,7 @@ FLASK AUTHENTICATION FOR USER
 6. Flask-WTF: Web forms
 7. ForgeryPy : for creating fake data
 8. flask-pagedown : for creating rich text fireld just like the textareafield from flaskform 
-9. Bleach 
+9.  
 
 
 

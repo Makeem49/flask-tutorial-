@@ -6,13 +6,13 @@ from itsdangerous import TimedJSONWebSignatureSerializer as Serializer
 from flask import current_app, request
 from datetime import datetime
 import hashlib
-
+from markdown import markdown 
+import bleach 
 
 
 @login_manager.user_loader
 def load_user(user_id):
 	return User.query.get(int(user_id))
-
 
 class Permission:
 	FOLLOW = 0x01 
@@ -21,7 +21,6 @@ class Permission:
 	MODERATE_COMMENT = 0X08
 	ADMINISTER = 0X80
 
-
 class Role(db.Model, UserMixin):
 	__tablename__ = 'roles' 
 	id = db.Column(db.Integer, primary_key= True)
@@ -29,7 +28,6 @@ class Role(db.Model, UserMixin):
 	default = db.Column(db.Boolean, default = False, index = True)
 	permissions = db.Column(db.Integer)
 	users = db.relationship('User', backref='role',  lazy='dynamic')
- 
 
 	@staticmethod 
 	def  insert_roles():
@@ -51,31 +49,7 @@ class Role(db.Model, UserMixin):
 		return f"Role {self.name}"
 
 
-class Post(db.Model, UserMixin):
-	__tablename__ = 'posts'
-	id = db.Column(db.Integer, primary_key = True)
-	body = db.Column(db.Text, nullable = False)
-	timestamp = db.Column(db.DateTime, default=datetime.utcnow, index = True)
-	author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
 
-	@staticmethod
-	def generate_fake(count = 100):
-		from random import seed , randint
-		import forgery_py
-
-		seed()
-		user_count = User.query.count()
-		for i in range(count):
-			u = User.query.offset(randint(0, user_count - 1)).first()
-			p = Post(body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),                     
-			 		timestamp=forgery_py.date.date(True),
-			 	    author=u) 
-			db.session.add(p)
-			db.session.commit()
-
-
-	def __repr__(self):
-		return f"Post('{self.title}', '{self.timestamp}')"
  
 
 
@@ -206,8 +180,46 @@ class AnonymousUser(AnonymousUserMixin):
 login_manager.anonymous_user = AnonymousUser
 
 
+class Post(db.Model, UserMixin):
+	__tablename__ = 'posts'
+	id = db.Column(db.Integer, primary_key = True)
+	body = db.Column(db.Text, nullable = False)
+	timestamp = db.Column(db.DateTime, default=datetime.utcnow, index = True)
+	author_id = db.Column(db.Integer, db.ForeignKey('users.id'))
+	body_html = db.Column(db.Text)
+
+	@staticmethod
+	def generate_fake(count = 100):
+		from random import seed , randint
+		import forgery_py
+
+		seed()
+		user_count = User.query.count()
+		for i in range(count):
+			u = User.query.offset(randint(0, user_count - 1)).first()
+			p = Post(body=forgery_py.lorem_ipsum.sentences(randint(1, 3)),                     
+			 		timestamp=forgery_py.date.date(True),
+			 	    author=u) 
+			db.session.add(p)
+			db.session.commit()
+
+	@staticmethod
+	def on_change_body(target, value, oldvalue, initiator):
+		allowed_tags = ['a','abbr', 'acronym', 'b', 'blockqoute', 'code', 
+						'em', 'i', 'li', 'pre', 'strong', 'ul', 'h1', 'h2',
+						'h3', 'p']
+		target.body_html = bleach.linkify(bleach.clean(markdown(value, output_format = 'html'), 
+										tags = allowed_tags, strip = True)) 
 
 
+	def __repr__(self):
+		return f"Post('{self.body}', '{self.timestamp}')"
+
+	def __repr__(self):
+		return f"Role {self.body}"
+
+
+db.event.listen(Post.body, 'set', Post.on_change_body)
 
 
 
