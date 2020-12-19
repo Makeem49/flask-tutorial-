@@ -1,12 +1,12 @@
 {% extends "base.html" %}
 
-{% block title %} Flasky - Post {% endblock %}
+<div class="container">
+	{% block page_content %}
 
-{% block page_content %}
-
-	{% include "_post.html" %}
-	
-{% endblock %}
+		{% include "_post.html" %}
+		
+	{% endblock %}
+</div>
 
 
 
