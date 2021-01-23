@@ -1,26 +1,26 @@
-from flask_wtf import Form
+from flask_wtf import FlaskForm
 from wtforms import StringField, SubmitField, PasswordField, BooleanField, TextAreaField, SelectField
-from wtforms.validators import Required, Length, EqualTo, Email, ValidationError
+from wtforms.validators import Required, Length, EqualTo, Email, ValidationError, InputRequired 
 from app.models import User
 from flask_pagedown.fields import PageDownField
 
-class NameForm(Form):
+class NameForm(FlaskForm):
 	name = StringField('name', validators=[Required(), Length(min=1,max=64), Email()])
 	submit = SubmitField("Log In")	
 
 
-class LoginForm(Form):
+class LoginForm(FlaskForm):
 	email = StringField('email', validators=[Required(), Length(4,64), Email()])
 	password = PasswordField('Password', validators=[Required()])
 	remember_me = BooleanField('Remember me')
 	submit = SubmitField("Log In")	
 
 
-class RegistrationForm(Form):
+class RegistrationForm(FlaskForm):
 	username = StringField('Username', validators = [Required(), Length(min=4, max=25)])
 	email = StringField('Email Address', validators = [Required(), Email()])
-	password = PasswordField('Password', validators = [Required(), Length(min=4)])
-	confirm_password = PasswordField("Confirm Password", validators = [Required(), EqualTo("password")])
+	password = PasswordField('Password', validators = [InputRequired(), Length(min=4), EqualTo("password")])
+	confirm_password = PasswordField("Confirm Password", validators = [InputRequired()])
 	submit = SubmitField("Sign Up")
 
 	def validate_username(self,username):
@@ -33,14 +33,14 @@ class RegistrationForm(Form):
 		if user:
 			raise ValidationError("Email already taken")
 
-class PasswordUpdate(Form):
+class PasswordUpdate(FlaskForm):
 	old_password = PasswordField('Old Password', validators=[Required()])
 	password = PasswordField('New Passowrd', validators = [Required(), Length(min=4)])
 	confirm_password = PasswordField("Confirm New Password", validators = [Required(), EqualTo("password")])
 	submit = SubmitField("Update Password")
 
 
-class ResetPasswordLink(Form):
+class ResetPasswordLink(FlaskForm):
 	email = StringField('Email Address', validators = [Required(), Email()])
 	submit = SubmitField("Send Password reset Link")
 
@@ -50,13 +50,13 @@ class ResetPasswordLink(Form):
 			raise ValidationError("There is no account with this email, you must register first.")
 
 
-class NewPasswordLForm(Form):
+class NewPasswordLForm(FlaskForm):
 	password = PasswordField('New Passowrd', validators = [Required(), Length(min=4)])
 	confirm_password = PasswordField("Confirm New Password", validators = [Required(), EqualTo("password")])
 	submit = SubmitField("Reset Password")
 
 
-class UpdateMail(Form):
+class UpdateMail(FlaskForm):
 	old_mail = StringField('Current Email', validators=[Required(), Email()])
 	new_mail = StringField('New Email', validators = [Required(), Email()])
 	submit = SubmitField("Update Email")
@@ -67,7 +67,7 @@ class UpdateMail(Form):
 			raise ValidationError('Email already taken')
 
 
-class EditProfileForm(Form):
+class EditProfileForm(FlaskForm):
 	name = StringField("Real name", validators=[Length(min=1,max =64)])
 	location = StringField('Location', validators=[Length(min=1, max = 64)])
 	about_me = TextAreaField("About me")
@@ -75,7 +75,7 @@ class EditProfileForm(Form):
 
 
 
-class EditProfileAdminForm(Form):
+class EditProfileAdminForm(FlaskForm):
 	name = StringField("Real name", validators=[Length(min=1, max=64)])
 	username = StringField("Username", validators=[Length(min=4, max=64)])
 	email = StringField("Email", validators=[Required(), Length(min=4, max=64), Email()])
@@ -96,11 +96,11 @@ class EditProfileAdminForm(Form):
 			raise ValidationError("Email already registered")
 
 	def validate_email(self, username):
-		if username.data != self.username.email and User.query.filter_by(email = email.data).first():
-			raise ValidationError("Email already registered")
+		if username.data != self.username.email and User.query.filter_by(email = username.data).first():
+			raise ValidationError("Username already registered")
 
 
-class PostForm(Form):
+class PostForm(FlaskForm):
     body = PageDownField("What's on your mind?", validators=[Required()])
     submit = SubmitField('Submit')
 

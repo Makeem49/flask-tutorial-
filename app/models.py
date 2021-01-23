@@ -48,6 +48,11 @@ class Role(db.Model, UserMixin):
 	def __repr__(self):
 		return f"Role {self.name}"
 
+class Follow(db.Model):
+	__tablename__ = 'follows'
+	follower_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+	followed_id = db.Column(db.Integer, db.ForeignKey('users.id'), primary_key = True)
+	timestamp = db.Column(db.DateTime, default = datetime.utcnow)
 
 
  
@@ -68,7 +73,12 @@ class User(db.Model, UserMixin):
 	last_seen = db.Column(db.DateTime(), default = datetime.utcnow )
 	avatar_hash = db.Column(db.String(32))
 	posts = db.relationship('Post', backref = 'author', lazy = 'dynamic')
-
+	followed = db.relationship('Follow', foreign_keys = [Follow.follower_id],
+								backref=db.backref('follower', lazy = 'joined'),
+								lazy = 'dynamic', cascade = 'all, delete-orphan')
+	followers = db.relationship('Follow', foreign_keys = [Follow.followed_id],
+								backref=db.backref('followed', lazy = 'joined'),
+								lazy = 'dynamic', cascade = 'all, delete-orphan')
 
 	def ping(self):
 		self.last_seen = datetime.utcnow()
@@ -85,6 +95,23 @@ class User(db.Model, UserMixin):
 
 		if self.email is not None and self.avatar_hash is None:
 			self.avatar_hash = hashlib.md5(self.email.encode('utf-8')).hexdigest()
+
+	
+	def follow(self, user):
+		if not self.is_following(user):
+			f = Follow(followed = user, follower = self)
+			db.session.add(f)
+
+	def unfollow(self, user):
+		f = self.followed.filter_by(followed_id = user.id ).first()
+		if f:
+			db.session.delete(f)
+
+	def is_following(self, user):
+		return self.followed.firter_by(followed_id = user.id).first() is not None
+
+	def is_followed_by(self, user):
+		return self.followers.filter_by(follower_id = user.id).first() is not None
 
 
 	def can(self, permissions):
@@ -162,6 +189,9 @@ class User(db.Model, UserMixin):
 			except IntegrityError:
 				db.session.rollback()
 
+		
+
+
 
 
 	def __repr__(self):
@@ -180,7 +210,7 @@ class AnonymousUser(AnonymousUserMixin):
 login_manager.anonymous_user = AnonymousUser
 
 
-class Post(db.Model, UserMixin):
+class Post(db.Model):
 	__tablename__ = 'posts'
 	id = db.Column(db.Integer, primary_key = True)
 	body = db.Column(db.Text, nullable = False)
@@ -215,12 +245,14 @@ class Post(db.Model, UserMixin):
 	def __repr__(self):
 		return f"Post('{self.body}', '{self.timestamp}')"
 
-	def __repr__(self):
-		return f"Role {self.body}"
-
+	
 
 db.event.listen(Post.body, 'set', Post.on_change_body)
 
 
-
+def fake_attribute():
+	db.drop_all()
+	db.create_all()
+	User.generate_fake()
+	Post.generate_fake()
 

@@ -19,9 +19,11 @@ def index():
 		db.session.commit()
 		return redirect(url_for('main.index'))
 	page = request.args.get('page', 1, type=int )
-	pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page = page , per_page = current_app.config['FLASKY_POSTS_PER_PAGE'] , error_out = False)
+	pagination = Post.query.order_by(Post.timestamp.desc()).paginate(page = page , 
+							per_page = current_app.config['FLASKY_POSTS_PER_PAGE'] , error_out = False)
 	posts = pagination.items
-	return render_template('index.html', pagination = pagination, form=form, posts = posts) 
+	return render_template('index.html', pagination = pagination, form=form, posts=posts) 
+
 
 @main.route('/user/<username>')
 def user(username):
@@ -29,7 +31,8 @@ def user(username):
 	if user is None:
 		abort(404)
 	page = request.args.get('page', 1, type=int )
-	pagination = user.posts.order_by(Post.timestamp.desc()).paginate(page = page , per_page = current_app.config['FLASKY_POSTS_PER_PAGE'] , error_out = False)
+	pagination = user.posts.order_by(Post.timestamp.desc()).paginate(page = page , 
+							per_page = current_app.config['FLASKY_POSTS_PER_PAGE'] , error_out = False)
 	posts = pagination.items
 	return render_template('user.html', user = user, posts = posts, pagination = pagination )
 
@@ -49,6 +52,7 @@ def edit_profile():
 	form.location.data = current_user.location
 	form.about_me.data = current_user.about_me
 	return render_template('edit_profile.html', form = form )
+
 
 @main.route('/edit-profile/<int:id>', methods=['GET', 'POST'])
 @login_required
@@ -77,6 +81,7 @@ def edit_prof_admin():
 	db.session.commit()
 	return render_template('edit_profile.html', form = form , user= user)
 
+
 @main.route('/post/<int:id>', methods = ['GET', 'POST'])
 def post(id):
 	post = Post.query.get_or_404(id)
@@ -96,6 +101,7 @@ def edit(id):
 	form.body.data = post.body
 	return render_template('edit_post.html', form = form , title = 'Flask Edit Post')
 
+
 @main.route('/post/<int:id>/delete', methods = ['GET', 'POST'])
 def delete(id):
 	post = Post.query.get_or_404(id)
@@ -106,9 +112,36 @@ def delete(id):
 	return redirect(url_for('main.index'))
 	
 
+@main.route('/follow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def follow(username):
+	user = User.query.filter_by(username = username ).first()
+	if user is None:
+		flash('Invalid user')
+		return redirect(url_for('main.index', username = username) )
+	if current_user.is_following(user):
+		flash(f'You are already following {username}')
+		return redirect(url_for('main.user', username = username ))
+	current_user.follow(user)
+	flash('You are now following this user')
+	return redirect('main.user', username = username)
 
 
-
+@main.route('/unfollow/<username>')
+@login_required
+@permission_required(Permission.FOLLOW)
+def unfollow(username):
+	user = User.query.filter_by(username = username ).first()
+	if user is None:
+		flash('Invalid user')
+		return redirect(url_for('main.index', username = username) )
+	if not current_user.is_following(user):
+		flash(f'You are not following {username}')
+		return redirect(url_for('main.user', username = username ))
+	current_user.unfollow(user)
+	flash('You are now following this user')
+	return redirect('main.user', username = username)
 
 
 

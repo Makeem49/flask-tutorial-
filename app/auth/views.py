@@ -35,7 +35,7 @@ def login():
 		if user is not None and user.verify_password(form.password.data):
 			flash('You are now logged in', 'success')
 			login_user(user, remember = form.remember_me.data)
-			next_page = request.args.get('next')   # Using request.atgs.get("next") to query if there's next page, will direct us to the page if it exist na d none if it does not
+			next_page = request.args.get('next')   # Using request.args.get("next") to query if there's next page, will direct us to the page if it exist na d none if it does not
 			if next_page:
 				return redirect(next_page)
 			else: 
@@ -69,7 +69,7 @@ def confirm(token):
 		flash('The confirmation link has expired or invalid', 'danger')
 	return redirect(url_for('main.index'))
 
-'''This view function help to determine what unconfirmed user can do when tey login.
+'''This view function help to determine what unconfirmed user can do when they login.
 That it restrict the user navigation on website '''
 @auth.before_app_request
 def before_request():
