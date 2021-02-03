@@ -3,11 +3,13 @@
 Dear {{ user.username }}
 
 
-Welcome to Flasky!
+<em>Welcome to Flasky!</em>
 
-to confirm your account, please click on the following link:
+<h1>to confirm your account, please click on the following link:</h1>
 
 {{ url_for('auth.confirm', token=token, _external = True) }}
+
+<a href=""></a>
 
 Sincerely,
 
